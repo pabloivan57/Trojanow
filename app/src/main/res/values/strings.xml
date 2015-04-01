@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">TrojaNow</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_login_controller">LoginController</string>
+    <string name="title_activity_signup_controller">SignupController</string>
+    <string name="title_activity_post_controller">PostController</string>
+    <string name="title_activity_messages_controller">MessagesController</string>
+    <string name="title_activity_message_detail_controller">MessageDetailControlle</string>
+</resources>
