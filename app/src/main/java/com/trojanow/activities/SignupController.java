@@ -1,5 +1,6 @@
 package com.trojanow.activities;
 
+import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -8,10 +9,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.pabloivan57.trojanow.R;
+import com.trojanow.api.AuthService;
+import com.trojanow.api.AuthServiceDelegate;
+import com.trojanow.model.User;
 
-public class SignupController extends ActionBarActivity {
+public class SignupController extends Activity implements AuthServiceDelegate {
 
     EditText txtSignupFullname;
     EditText txtSignupEmail;
@@ -19,15 +24,20 @@ public class SignupController extends ActionBarActivity {
     Button   btnSignup;
     TextView linkLogin;
 
+    AuthService authService;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup_controller);
 
+        authService = new AuthService(this);
+
         txtSignupFullname = (EditText) findViewById(R.id.txtSignupFullname);
         txtSignupEmail    = (EditText) findViewById(R.id.txtSignupEmail);
-        txtSignupPassword = (EditText) findViewById(R.id.txtLoginPassword);
+        txtSignupPassword = (EditText) findViewById(R.id.txtSignupPassword);
 
         btnSignup = (Button) findViewById(R.id.btnSignup);
         btnSignup.setOnClickListener(btnSignupHandler);
@@ -64,7 +74,11 @@ public class SignupController extends ActionBarActivity {
      */
     View.OnClickListener btnSignupHandler = new View.OnClickListener(){
         public void onClick(View v) {
+            User user = new User();
+            user.setEmail(txtSignupEmail.getText().toString());
+            user.setPassword(txtSignupPassword.getText().toString());
 
+            authService.signUp(user);
         }
     };
 
@@ -77,4 +91,16 @@ public class SignupController extends ActionBarActivity {
             SignupController.this.finish();
         }
     };
+
+    @Override
+    public void authServiceDidFinishSignup(User user) {
+        Toast.makeText(getApplicationContext(), "User signed up sucessfully",
+                       Toast.LENGTH_LONG).show();
+        SignupController.this.finish();
+    }
+
+    @Override
+    public void authServiceDidFinishLogin(User user) {
+
+    }
 }

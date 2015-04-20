@@ -11,13 +11,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.pabloivan57.trojanow.R;
+import com.trojanow.api.AuthService;
+import com.trojanow.api.AuthServiceDelegate;
+import com.trojanow.model.User;
 
-public class LoginController extends ActionBarActivity {
+public class LoginController extends ActionBarActivity implements AuthServiceDelegate {
 
     EditText txtEmail;
     EditText txtPassword;
     Button   btnLogin;
     TextView linkSignup;
+    AuthService authService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +37,8 @@ public class LoginController extends ActionBarActivity {
         linkSignup  = (TextView) findViewById(R.id.linkSignup);
         linkSignup.setOnClickListener(linkSignupHandler);
 
-
+        authService = new AuthService(this);
+        authService.setDelegate(this);
     }
 
 
@@ -64,8 +69,7 @@ public class LoginController extends ActionBarActivity {
      */
     View.OnClickListener btnLoginHandler = new View.OnClickListener(){
       public void onClick(View v) {
-          Intent intent = new Intent(v.getContext(), PostController.class);
-          startActivityForResult(intent, 0);
+          authService.login(txtEmail.getText().toString(), txtPassword.getText().toString());
       }
     };
 
@@ -78,4 +82,15 @@ public class LoginController extends ActionBarActivity {
             startActivityForResult(intent, 0);
         }
     };
+
+    @Override
+    public void authServiceDidFinishSignup(User user) {
+
+    }
+
+    @Override
+    public void authServiceDidFinishLogin(User user) {
+        Intent intent = new Intent(this.getBaseContext(), PostController.class);
+        startActivityForResult(intent, 0);
+    }
 }

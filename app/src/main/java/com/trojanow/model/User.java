@@ -7,8 +7,9 @@ public class User {
     private String username;
     private String password;
     private String email;
-    private Integer userId;
+    private Integer id;
     private Boolean active;
+    private String  authentication_token;
 
     public String getUsername() {
         return username;
@@ -34,12 +35,12 @@ public class User {
         this.email = email;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setId(Integer userId) {
+        this.id = userId;
     }
 
     public Boolean getActive() {
@@ -48,5 +49,9 @@ public class User {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public String getAuthenticationToken() {
+        return this.authentication_token;
     }
 }
