@@ -94,7 +94,7 @@ public class AuthService {
             URL signUpUrl = null;
             String jsonUser = null;
             try {
-                signUpUrl = new URL(APIEndpoints.LOGIN_USER);
+                signUpUrl = new URL(APIEndpoints.SIGN_UP_USER);
                 HttpURLConnection urlConnection = (HttpURLConnection) signUpUrl.openConnection();
 
                 urlConnection.setDoInput(true);
