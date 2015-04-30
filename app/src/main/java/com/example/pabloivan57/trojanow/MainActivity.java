@@ -9,7 +9,6 @@ import com.trojanow.activities.PostController;
 
 
 public class MainActivity extends ActionBarActivity {
-    PostController postController = new PostController(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

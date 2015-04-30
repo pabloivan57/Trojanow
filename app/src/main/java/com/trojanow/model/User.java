@@ -4,19 +4,19 @@ package com.trojanow.model;
  * Created by pabloivan57 on 3/27/15.
  */
 public class User {
-    private String username;
+    private String fullname;
     private String password;
     private String email;
     private Integer id;
     private Boolean active;
     private String  authentication_token;
 
-    public String getUsername() {
-        return username;
+    public String getFullname() {
+        return fullname;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
     }
 
     public String getPassword() {

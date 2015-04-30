@@ -66,14 +66,14 @@ public class AuthService {
      * Sets the auth_token header on the networking library for any subsequent authenticated requests
      */
     public void setAuthToken(String authToken) {
-        SharedPreferences sharedPref = context.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = context.getSharedPreferences("AUTHORIZATION", 0);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(AUTHORIZATION_TOKEN, authToken);
         editor.commit();
     }
 
     public String getAuthToken() {
-        SharedPreferences sharedPref = context.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = context.getSharedPreferences("AUTHORIZATION", 0);
         String authToken = sharedPref.getString(AUTHORIZATION_TOKEN, "");
         return authToken;
     }
@@ -89,10 +89,14 @@ public class AuthService {
 
     private class SignupTask extends AsyncTask<User, Void, User> {
 
+        private String error;
+
         protected User doInBackground(User... params) {
             User user = params[0];
             URL signUpUrl = null;
-            String jsonUser = null;
+            String responseText = null;
+            User createdUser = null;
+
             try {
                 signUpUrl = new URL(APIEndpoints.SIGN_UP_USER);
                 HttpURLConnection urlConnection = (HttpURLConnection) signUpUrl.openConnection();
@@ -107,6 +111,7 @@ public class AuthService {
                 postParameters.put("email",user.getEmail());
                 postParameters.put("password", user.getPassword());
                 postParameters.put("password_confirmation", user.getPassword());
+                postParameters.put("fullname", user.getFullname());
 
                 String queryString = QueryStringBuilder.queryStringForParameters(postParameters);
 
@@ -120,34 +125,41 @@ public class AuthService {
 
                 urlConnection.connect();
                 int status = urlConnection.getResponseCode();
-
-                switch (status) {
-                    case 200:
-                    case 201:
-                        BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                        StringBuilder sb = new StringBuilder();
-                        String line;
-                        while ((line = br.readLine()) != null) {
-                            sb.append(line+"\n");
-                        }
-                        br.close();
-                        jsonUser = sb.toString();
+                if (status == 200 || status == 201) {
+                    BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                    StringBuilder sb = new StringBuilder();
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line+"\n");
+                    }
+                    br.close();
+                    responseText = sb.toString();
+                    createdUser = new Gson().fromJson(responseText, User.class);
+                } else {
+                    error = "An error ocurred in server " + status;
                 }
-            } catch (MalformedURLException e) {
+
+               } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            User createdUser = new Gson().fromJson(jsonUser, User.class);
             return createdUser;
         }
 
         protected void onPostExecute(User user) {
-            setAuthToken(user.getAuthenticationToken());
+            if(user == null) {
+                if(delegate != null) {
+                    delegate.authServiceDidFailedSignup(this.error);
+                }
+            }else {
 
-            if(delegate != null) {
-                delegate.authServiceDidFinishSignup(user);
+                setAuthToken(user.getAuthenticationToken());
+
+                if (delegate != null) {
+                    delegate.authServiceDidFinishSignup(user);
+                }
             }
         }
 
@@ -155,11 +167,14 @@ public class AuthService {
 
     private class LoginTask extends AsyncTask<String, Void, User> {
 
+        private String error;
+
         protected User doInBackground(String... params) {
             String email = params[0];
             String password = params[1];
             URL loginUrl = null;
-            String jsonUser = null;
+            String responseText = null;
+            User loggedUser = null;
             try {
                 loginUrl = new URL(APIEndpoints.LOGIN_USER);
                 HttpURLConnection urlConnection = (HttpURLConnection) loginUrl.openConnection();
@@ -186,34 +201,42 @@ public class AuthService {
 
                 urlConnection.connect();
                 int status = urlConnection.getResponseCode();
-
-                switch (status) {
-                    case 200:
-                    case 201:
-                        BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                        StringBuilder sb = new StringBuilder();
-                        String line;
-                        while ((line = br.readLine()) != null) {
-                            sb.append(line+"\n");
-                        }
-                        br.close();
-                        jsonUser = sb.toString();
+                if (status == 200 || status == 201) {
+                    BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                    StringBuilder sb = new StringBuilder();
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line+"\n");
+                    }
+                    br.close();
+                    responseText = sb.toString();
+                    loggedUser = new Gson().fromJson(responseText, User.class);
+                } else if(status == 401) {
+                    error = "Incorrect login/password";
+                } else {
+                    error = "An error occurred in server " + status;
                 }
+
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-            User loggedUser = new Gson().fromJson(jsonUser, User.class);
             return loggedUser;
         }
 
         protected void onPostExecute(User user) {
-            setAuthToken(user.getAuthenticationToken());
+            if(user == null) {
+                if(delegate != null) {
+                    delegate.authServiceDidFailedLogin(this.error);
+                }
+            }else {
 
-            if(delegate != null) {
-                delegate.authServiceDidFinishLogin(user);
+                setAuthToken(user.getAuthenticationToken());
+
+                if (delegate != null) {
+                    delegate.authServiceDidFinishLogin(user);
+                }
             }
         }
     }

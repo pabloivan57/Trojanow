@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.pabloivan57.trojanow.R;
 import com.trojanow.api.AuthService;
@@ -89,8 +90,19 @@ public class LoginController extends ActionBarActivity implements AuthServiceDel
     }
 
     @Override
+    public void authServiceDidFailedSignup(String error) {
+
+    }
+
+    @Override
     public void authServiceDidFinishLogin(User user) {
         Intent intent = new Intent(this.getBaseContext(), PostController.class);
         startActivityForResult(intent, 0);
+    }
+
+    @Override
+    public void authServiceDidFailedLogin(String error) {
+        Toast.makeText(getApplicationContext(), error,
+                Toast.LENGTH_LONG).show();
     }
 }

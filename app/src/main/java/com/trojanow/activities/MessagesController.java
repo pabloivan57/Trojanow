@@ -37,12 +37,12 @@ public class MessagesController extends ActionBarActivity {
          */
 
         User sender1 = new User();
-        sender1.setUsername("john_1");
+        sender1.setFullname("john_1");
         sender1.setEmail("jhon_1@gmail.com");
 
         User sender2 = new User();
-        sender2.setUsername("stevenRogers");
-        sender2.setUsername("stevenRogers@yahoo.com");
+        sender2.setFullname("stevenRogers");
+        sender2.setEmail("stevenRogers@yahoo.com");
 
         Message message1 = new Message();
         message1.setMessage("Hey, are you going to the party tonight?");

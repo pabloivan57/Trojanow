@@ -36,21 +36,16 @@
             android:layout_height="wrap_content"
             android:text="Share my enviromental Info"
             android:id="@+id/chkEnviroment" />
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/img_ico"
-            android:layout_marginLeft="5dp"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-        <EditText
-            android:id="@+id/txtGoInbox"
-            android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <CheckBox
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Go to my message Inbox"
-            android:clickable="true"/>
+            android:text="Event"
+            android:id="@+id/chkEvent" />
     </LinearLayout>
     <ListView
         android:id="@+id/lstPosts"

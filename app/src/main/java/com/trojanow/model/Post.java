@@ -1,5 +1,7 @@
 package com.trojanow.model;
 
+import android.location.Location;
+
 import com.trojanow.sensor.EnvironmentInfo;
 
 import java.util.List;
@@ -12,6 +14,7 @@ public class Post {
     private String description;
     private Boolean anonymous;
     private Boolean shareEnvironment;
+    private Boolean isEvent;
     private Location location;
     private List<MediaType> media;
     private User publisher;
@@ -78,5 +81,13 @@ public class Post {
 
     public void setEnvironmentInfo(EnvironmentInfo environmentInfo) {
         this.environmentInfo = environmentInfo;
+    }
+
+    public Boolean getIsEvent() {
+        return isEvent;
+    }
+
+    public void setIsEvent(Boolean isEvent) {
+        this.isEvent = isEvent;
     }
 }

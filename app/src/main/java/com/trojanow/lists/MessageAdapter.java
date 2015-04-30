@@ -51,7 +51,7 @@ public class MessageAdapter extends BaseAdapter {
         Message message = data.get(position);
 
         // Setting all values in listview
-        username.setText(message.getSender().getUsername());
+        username.setText(message.getSender().getFullname());
         postDescription.setText(message.getMessage());
         return vi;
     }

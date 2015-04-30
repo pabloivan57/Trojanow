@@ -7,5 +7,7 @@ import com.trojanow.model.User;
  */
 public interface AuthServiceDelegate {
     public void authServiceDidFinishSignup(User user);
+    public void authServiceDidFailedSignup(String error);
     public void authServiceDidFinishLogin(User user);
+    public void authServiceDidFailedLogin(String error);
 }

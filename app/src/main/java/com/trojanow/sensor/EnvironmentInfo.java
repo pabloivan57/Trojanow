@@ -8,6 +8,11 @@ public class EnvironmentInfo {
     private Double humidity;
     private Double temperature;
 
+    public EnvironmentInfo() {
+        humidity = 0.0;
+        temperature = 0.0;
+    }
+
     public Double getHumidity() {
         return humidity;
     }

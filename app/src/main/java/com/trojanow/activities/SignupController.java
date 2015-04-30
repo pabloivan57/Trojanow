@@ -34,6 +34,7 @@ public class SignupController extends Activity implements AuthServiceDelegate {
         setContentView(R.layout.activity_signup_controller);
 
         authService = new AuthService(this);
+        authService.setDelegate(this);
 
         txtSignupFullname = (EditText) findViewById(R.id.txtSignupFullname);
         txtSignupEmail    = (EditText) findViewById(R.id.txtSignupEmail);
@@ -77,6 +78,7 @@ public class SignupController extends Activity implements AuthServiceDelegate {
             User user = new User();
             user.setEmail(txtSignupEmail.getText().toString());
             user.setPassword(txtSignupPassword.getText().toString());
+            user.setFullname(txtSignupFullname.getText().toString());
 
             authService.signUp(user);
         }
@@ -99,8 +101,17 @@ public class SignupController extends Activity implements AuthServiceDelegate {
         SignupController.this.finish();
     }
 
+    public void authServiceDidFailedSignup(String error) {
+
+    }
+
     @Override
     public void authServiceDidFinishLogin(User user) {
+
+    }
+
+    @Override
+    public void authServiceDidFailedLogin(String error) {
 
     }
 }

@@ -51,7 +51,7 @@ public class PostAdapter extends BaseAdapter {
         Post post = data.get(position);
 
         // Setting all values in listview
-        username.setText(post.getPublisher().getUsername());
+        username.setText(post.getPublisher().getFullname());
         postDescription.setText(post.getDescription());
         return vi;
     }

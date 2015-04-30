@@ -21,15 +21,19 @@ import android.widget.CheckBox;
 import com.example.pabloivan57.trojanow.R;
 import com.trojanow.api.AuthService;
 import com.trojanow.api.AuthServiceDelegate;
+import com.trojanow.api.Publisher;
+import com.trojanow.api.PublisherDelegate;
 import com.trojanow.lists.PostAdapter;
-import com.trojanow.model.Location;
+
 import com.trojanow.model.Post;
+import com.trojanow.sensor.Environment;
+import com.trojanow.sensor.Geolocation;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class PostController extends Activity {
+public class PostController extends Activity implements PublisherDelegate {
 
     ListView lstPosts;
     ArrayAdapter mPostsAdapter;
@@ -37,18 +41,20 @@ public class PostController extends Activity {
     PostAdapter postAdapter;
     EditText txtPost;
     Button btnPost;
-    CheckBox checkBox = (CheckBox) findViewById(R.id.chkEnviroment);
-    private LocationManager locationManager;
-    public PostController(Context context) {
-        locationManager =(LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
-    }
-
+    CheckBox chkEnvironment;
+    CheckBox chkAnonymous;
+    CheckBox chkEvent;
+    Geolocation geolocation;
+    Environment environment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_controller);
 
+        chkEnvironment =  (CheckBox) findViewById(R.id.chkEnviroment);
+        chkAnonymous   =  (CheckBox) findViewById(R.id.chkAnonymous);
+        chkEvent       =  (CheckBox) findViewById(R.id.chkEvent);
         postAdapter = new PostAdapter(this, posts);
         btnPost = (Button) findViewById(R.id.btnpost);
         btnPost.setOnClickListener(btnPostHandler);
@@ -56,8 +62,10 @@ public class PostController extends Activity {
         lstPosts.setAdapter(postAdapter);
 
         txtPost = (EditText) findViewById(R.id.txtPost);
-        txtPost.setOnClickListener(btnPostHandler);
-        String token = new AuthService(this).getAuthToken();
+
+        //Initialize sensors
+        geolocation = new Geolocation(this);
+        environment = new Environment(this);
 
     }
 
@@ -90,50 +98,26 @@ public class PostController extends Activity {
      */
     public View.OnClickListener btnPostHandler = new View.OnClickListener(){
         public void onClick(View v) {
-            if (checkBox.isChecked()) {
+        Post post = new Post();
+        post.setDescription(txtPost.getText().toString());
+        post.setLocation(geolocation.getLocation());
+        post.setIsEvent(chkEvent.isChecked());
 
+        if(chkAnonymous.isChecked()) {
+            post.setAnonymous(true);
+        }
 
-               // checkBox.setChecked(false); show two more options for location and temperature
-                // Acquire a reference to the system Location Manager
-             //   LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        if(chkEnvironment.isChecked()) {
+            post.setShareEnvironment(true);
+            post.setEnvironmentInfo(environment.getEnviromentInfo());
+        }
 
-// Define a listener that responds to location updates
-                LocationListener locationListener = new LocationListener() {
+        Publisher publisher = new Publisher(PostController.this);
+        publisher.setDelegate(PostController.this);
+        publisher.post(post);
 
-                    public void onLocationChanged(android.location.Location location) {
-                        // Called when a new location is found by the network location provider.
-                        //makeUseOfNewLocation(location);
-                    }
-
-                  //  @Override
-                  //  public void onLocationChanged(android.location.Location location) {
-
-                 //   }
-
-                    public void onStatusChanged(String provider, int status, Bundle extras) {}
-
-                    public void onProviderEnabled(String provider) {}
-
-                    public void onProviderDisabled(String provider) {}
-                };
-
-// Register the listener with the Location Manager to receive location updates
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-
-            }
-                Post post = new Post();
-                post.setDescription(txtPost.getText().toString());
-            Toast.makeText(getApplicationContext(), "Post successful",
-                    Toast.LENGTH_LONG).show();
-            PostController.this.finish();
-
-            //    authService.signUp(user);
-            }
+    }
         };
-
-
-
-
 
 
     /**
@@ -151,4 +135,16 @@ public class PostController extends Activity {
             startActivityForResult(intent, 0);
         }
     };
+
+    @Override
+    public void publisherDidFinishPosting(Post createdPost) {
+        Toast.makeText(getApplicationContext(), "Status Posted Sucessfully",
+                Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void publisherDidFailedPosting(String error) {
+        Toast.makeText(getApplicationContext(), "There was an error while posting the status",
+                Toast.LENGTH_LONG).show();
+    }
 }
