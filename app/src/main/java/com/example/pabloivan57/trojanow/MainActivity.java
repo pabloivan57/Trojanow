@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.trojanow.activities.PostController;
+
 
 public class MainActivity extends ActionBarActivity {
-
+    PostController postController = new PostController(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

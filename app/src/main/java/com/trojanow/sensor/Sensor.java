@@ -5,6 +5,8 @@ package com.trojanow.sensor;
  */
 public class Sensor {
 
+
+
     /**
      *
      * @return enviromentInfo
@@ -12,5 +14,6 @@ public class Sensor {
      */
     public EnvironmentInfo getEnviromentInfo(){
         return null;
+        //call location api, pass it to temperature api
     }
 }

@@ -11,6 +11,7 @@ public class Post {
     private String title;
     private String description;
     private Boolean anonymous;
+    private Boolean shareEnvironment;
     private Location location;
     private List<MediaType> media;
     private User publisher;
@@ -39,7 +40,13 @@ public class Post {
     public void setAnonymous(Boolean anonymous) {
         this.anonymous = anonymous;
     }
+    public Boolean getShareEnvironment() {
+        return shareEnvironment;
+    }
 
+    public void setShareEnvironment(Boolean shareEnvironment) {
+        this.shareEnvironment = shareEnvironment;
+    }
     public Location getLocation() {
         return location;
     }

@@ -8,4 +8,5 @@
     <string name="title_activity_post_controller">PostController</string>
     <string name="title_activity_messages_controller">MessagesController</string>
     <string name="title_activity_message_detail_controller">MessageDetailControlle</string>
+
 </resources>
