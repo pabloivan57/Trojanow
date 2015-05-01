@@ -6,10 +6,21 @@ package com.trojanow.api;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.util.EventLogTags;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
+import com.example.pabloivan57.trojanow.R;
 import com.google.gson.Gson;
 import com.trojanow.model.Post;
 import com.trojanow.networking.QueryStringBuilder;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -20,6 +31,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,6 +43,11 @@ public class Subscriber {
 
     private Activity context;
     private SubscriberDelegate delegate;
+    private static final String STATUS = "description";
+    private static final String NAME = "name";
+    JSONArray description=null;
+    ArrayList<String> title_array = new ArrayList<String>();
+    ArrayList<String> notice_array = new ArrayList<String>();
 
     public Subscriber(Activity context) {
         this.context = context;
@@ -77,6 +94,8 @@ public class Subscriber {
                 String auth_token = new AuthService(context).getAuthToken();
                 urlConnection.setRequestProperty("AUTHORIZATION_TOKEN", new AuthService(context).getAuthToken());
                 System.out.println(urlConnection.getResponseCode());
+                String statuspost=post.getDescription();
+                System.out.println(statuspost);
 
                 urlConnection.connect();
                 int status = urlConnection.getResponseCode();
@@ -86,9 +105,46 @@ public class Subscriber {
                     String line;
                     while ((line = br.readLine()) != null) {
                         sb.append(line + "\n");
+
                     }
                     br.close();
                     responseText = sb.toString();
+                    HashMap<String, String> map = new HashMap<String, String>();
+                    ArrayList<HashMap<String, String>> mylist = new ArrayList<HashMap<String, String>>();
+
+
+
+
+
+                    JSONArray jarray = new JSONArray(responseText);
+                    for (int i = 0; i < jarray.length(); i++) {
+
+                    JSONObject obj = jarray.getJSONObject(i);
+                    String description = obj.getString("description");
+                    JSONObject obj1 = obj.getJSONObject("user");
+                    JSONObject loc = obj.getJSONObject("location");
+                    JSONObject temp = obj.getJSONObject("environment");
+                    String fullname = obj1.getString("fullname");
+                    String latitude = loc.getString("latitude");
+                    String longitude=loc.getString("longitude");
+                    String temperature = temp.getString("temperature");
+                        map.put("name", fullname);
+                        map.put("temperature", temperature);
+
+                        map.put("description",description);
+
+                        mylist.add(map);
+                    //    String name_fd = obj.getString("FOOD_NAME");
+                    //  Log.d("JSONArray", id_fd+"   " +name_fd);
+              //      System.out.println(description);
+                //    System.out.println(fullname);
+
+
+
+                    }
+
+
+
 
                     //There will be an exception here, replace for correct
                     // way of parsing json arrays using GSON library
@@ -116,6 +172,8 @@ public class Subscriber {
         protected void onPostExecute(Post post) {
             if (post != null) {
                 if (delegate != null) {
+                  //  Toast.makeText(getApplicationContext(), "Received!", Toast.LENGTH_LONG).show();
+                  //  etResponse.setText(result);
                     delegate.subscriberDidFinishGetting(post);
                 }
             } else {

@@ -50,10 +50,14 @@ public class PostController extends Activity implements PublisherDelegate, Subsc
     Environment environment;
     String status;
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_controller);
+
 
         chkEnvironment =  (CheckBox) findViewById(R.id.chkEnviroment);
         chkAnonymous   =  (CheckBox) findViewById(R.id.chkAnonymous);
