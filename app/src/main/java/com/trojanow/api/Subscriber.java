@@ -1,13 +1,15 @@
 package com.trojanow.api;
 
-import com.trojanow.model.Post;
+/**
+ * Created by alisha on 5/1/2015.
+ */
 
 import android.app.Activity;
 import android.os.AsyncTask;
 
 import com.google.gson.Gson;
+import com.trojanow.model.Post;
 import com.trojanow.networking.QueryStringBuilder;
-import com.trojanow.sensor.Environment;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -21,16 +23,16 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by pabloivan57 on 3/27/15.
- */
-public class Publisher {
+
+
+
+public class Subscriber {
 //create a constructor to pass context or create an authservice outside
 
     private Activity context;
-    private PublisherDelegate delegate;
+    private SubscriberDelegate delegate;
 
-    public Publisher(Activity context) {
+    public Subscriber(Activity context) {
         this.context = context;
     }
 
@@ -44,11 +46,11 @@ public class Publisher {
         new PostTask().execute(post);
     }
 
-    public PublisherDelegate getDelegate() {
+    public SubscriberDelegate getDelegate() {
         return delegate;
     }
 
-    public void setDelegate(PublisherDelegate delegate) {
+    public void setDelegate(SubscriberDelegate delegate) {
         this.delegate = delegate;
     }
 
@@ -61,26 +63,28 @@ public class Publisher {
             Post createdpost = null;
             URL postUrl = null;
             URL getUrl = null;
-            Post getpost;
+            //Post getpost;
             String responseText = null;
             try {
-                postUrl = new URL(APIEndpoints.CREATE_STATUS);
-                HttpURLConnection urlConnection = (HttpURLConnection) postUrl.openConnection();
-
+                getUrl = new URL("http://trojanow.herokuapp.com/statuses");
+                HttpURLConnection urlConnection = (HttpURLConnection)getUrl.openConnection();
+               // System.out.println(urlConnection.getResponseCode());
                 urlConnection.setDoInput(true);
                 urlConnection.setDoOutput(true);
-                urlConnection.setRequestMethod("POST");
+                urlConnection.setRequestMethod("GET");
                 urlConnection.setRequestProperty("Content-Type",
                         "application/x-www-form-urlencoded");
-                urlConnection.setRequestProperty("Accept","application/json");
+                urlConnection.setRequestProperty("Accept", "application/json");
                 String auth_token = new AuthService(context).getAuthToken();
                 urlConnection.setRequestProperty("AUTHORIZATION_TOKEN", new AuthService(context).getAuthToken());
+                System.out.println(urlConnection.getResponseCode());
 
                 Map<String, String> postParameters = new HashMap<String, String>();
-                postParameters.put("status[description]", post.getDescription());
-            //    System.out.println(post.getDescription());
-                postParameters.put("status[anonymous]", "false");
-                if(post.getAnonymous() == true) {
+                System.out.println("----It's Working");
+                String statuspost =  postParameters.get("status[description]");
+                    System.out.println(postParameters.get("status[description]"));
+                //   postParameters.put("status[anonymous]", "false");
+           /*     if(post.getAnonymous() == true) {
                     postParameters.put("status[anonymous]", "true");
                 }
 
@@ -95,7 +99,7 @@ public class Publisher {
                 postParameters.put("status[status_type]", "status");
                 if(post.getIsEvent()) {
                     postParameters.put("status[status_type]", "event");
-                }
+                }*/
 
                 String queryString = QueryStringBuilder.queryStringForParameters(postParameters);
 
@@ -114,12 +118,12 @@ public class Publisher {
                     StringBuilder sb = new StringBuilder();
                     String line;
                     while ((line = br.readLine()) != null) {
-                        sb.append(line+"\n");
+                        sb.append(line + "\n");
                     }
                     br.close();
                     responseText = sb.toString();
                     createdpost = new Gson().fromJson(responseText, Post.class);
-                } else if(status == 401) {
+                } else if (status == 401) {
                     error = "Unauthorized for the operation";
                 } else {
                     error = "An error ocurred in server " + status;
@@ -134,17 +138,17 @@ public class Publisher {
         }
 
 
-       protected void onPostExecute(Post post) {
-           if(post != null) {
-             if(delegate != null) {
-                delegate.publisherDidFinishPosting(post);
-             }
-           } else {
-             if(delegate != null) {
-                 delegate.publisherDidFailedPosting(this.error);
-             }
-           }
-       }
+        protected void onPostExecute(Post post) {
+            if (post != null) {
+                if (delegate != null) {
+                    delegate.subscriberDidFinishGetting(post);
+                }
+            } else {
+                if (delegate != null) {
+                    delegate.subscriberDidFailedGetting(this.error);
+                }
+            }
+        }
 
     }
 }

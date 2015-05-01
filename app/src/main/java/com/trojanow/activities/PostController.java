@@ -23,6 +23,8 @@ import com.trojanow.api.AuthService;
 import com.trojanow.api.AuthServiceDelegate;
 import com.trojanow.api.Publisher;
 import com.trojanow.api.PublisherDelegate;
+import com.trojanow.api.Subscriber;
+import com.trojanow.api.SubscriberDelegate;
 import com.trojanow.lists.PostAdapter;
 
 import com.trojanow.model.Post;
@@ -33,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class PostController extends Activity implements PublisherDelegate {
+public class PostController extends Activity implements PublisherDelegate, SubscriberDelegate {
 
     ListView lstPosts;
     ArrayAdapter mPostsAdapter;
@@ -46,6 +48,7 @@ public class PostController extends Activity implements PublisherDelegate {
     CheckBox chkEvent;
     Geolocation geolocation;
     Environment environment;
+    String status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +66,36 @@ public class PostController extends Activity implements PublisherDelegate {
 
         txtPost = (EditText) findViewById(R.id.txtPost);
 
+
         //Initialize sensors
         geolocation = new Geolocation(this);
         environment = new Environment(this);
-
+      //  Post post=new Post();
+       // status=post.getDescription();
+        //System.out.println("--"+status);
     }
+    protected void onStart()
+    {
+
+        super.onStart();
+        Post post = new Post();
+        System.out.print("------subscriber");
+        Subscriber subscriber = new Subscriber(PostController.this);
+        subscriber.setDelegate(PostController.this);
+        subscriber.post(post);
+        String statuspost= post.getDescription();
+    //    post.setLocation(geolocation.getLocation());
+      //  post.setIsEvent(chkEvent.isChecked());
+    }
+
+
+    @Override
+    protected void onResume()
+    {
+
+        super.onResume();
+    }
+
 
 
     @Override
@@ -87,6 +115,7 @@ public class PostController extends Activity implements PublisherDelegate {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -107,8 +136,10 @@ public class PostController extends Activity implements PublisherDelegate {
             post.setAnonymous(true);
         }
 
+
         if(chkEnvironment.isChecked()) {
             post.setShareEnvironment(true);
+          //  System.out.println("----check--!"+environment.getEnviromentInfo());
             post.setEnvironmentInfo(environment.getEnviromentInfo());
         }
 
@@ -146,5 +177,16 @@ public class PostController extends Activity implements PublisherDelegate {
     public void publisherDidFailedPosting(String error) {
         Toast.makeText(getApplicationContext(), "There was an error while posting the status",
                 Toast.LENGTH_LONG).show();
+    }
+
+    public void subscriberDidFinishGetting(Post createdPost) {
+       // Toast.makeText(getApplicationContext(), "Status Posted Sucessfully",
+         //       Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void subscriberDidFailedGetting(String error) {
+       // Toast.makeText(getApplicationContext(), "There was an error while posting the status",
+         //       Toast.LENGTH_LONG).show();
     }
 }

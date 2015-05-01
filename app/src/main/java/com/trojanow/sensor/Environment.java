@@ -40,6 +40,7 @@ public class Environment implements SensorEventListener {
 
     public void onSensorChanged(SensorEvent event) {
         if(event.sensor == temperatureSensor) {
+            System.out.println("checktemp"+event.values[0]);
             environmentInfo.setTemperature(new Double(event.values[0]));
         }
     }
