@@ -12,9 +12,9 @@ import java.util.List;
 public class Post {
     private String title;
     private String description;
-    private Boolean anonymous;
-    private Boolean shareEnvironment;
-    private Boolean isEvent;
+    private boolean anonymous;
+    private boolean shareEnvironment;
+    private boolean isEvent;
     private Location location;
     private List<MediaType> media;
     private User publisher;
