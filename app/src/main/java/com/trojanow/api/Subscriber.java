@@ -68,9 +68,8 @@ public class Subscriber {
             try {
                 getUrl = new URL("http://trojanow.herokuapp.com/statuses");
                 HttpURLConnection urlConnection = (HttpURLConnection)getUrl.openConnection();
-               // System.out.println(urlConnection.getResponseCode());
                 urlConnection.setDoInput(true);
-                urlConnection.setDoOutput(true);
+                urlConnection.setDoOutput(false);
                 urlConnection.setRequestMethod("GET");
                 urlConnection.setRequestProperty("Content-Type",
                         "application/x-www-form-urlencoded");
@@ -78,38 +77,6 @@ public class Subscriber {
                 String auth_token = new AuthService(context).getAuthToken();
                 urlConnection.setRequestProperty("AUTHORIZATION_TOKEN", new AuthService(context).getAuthToken());
                 System.out.println(urlConnection.getResponseCode());
-
-                Map<String, String> postParameters = new HashMap<String, String>();
-                System.out.println("----It's Working");
-                String statuspost =  postParameters.get("status[description]");
-                    System.out.println(postParameters.get("status[description]"));
-                //   postParameters.put("status[anonymous]", "false");
-           /*     if(post.getAnonymous() == true) {
-                    postParameters.put("status[anonymous]", "true");
-                }
-
-                postParameters.put("status[location][latitude]", ((Double)post.getLocation().getLatitude()).toString());
-                postParameters.put("status[location][longitude]", ((Double)post.getLocation().getLongitude()).toString());
-
-
-                if(post.getShareEnvironment() == true) {
-                    postParameters.put("status[environment][temperature]", ((Double)post.getEnvironmentInfo().getTemperature()).toString());
-                }
-
-                postParameters.put("status[status_type]", "status");
-                if(post.getIsEvent()) {
-                    postParameters.put("status[status_type]", "event");
-                }*/
-
-                String queryString = QueryStringBuilder.queryStringForParameters(postParameters);
-
-                OutputStream os = urlConnection.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(
-                        new OutputStreamWriter(os, "UTF-8"));
-                writer.write(queryString);
-                writer.flush();
-                writer.close();
-                os.close();
 
                 urlConnection.connect();
                 int status = urlConnection.getResponseCode();
@@ -122,7 +89,10 @@ public class Subscriber {
                     }
                     br.close();
                     responseText = sb.toString();
-                    createdpost = new Gson().fromJson(responseText, Post.class);
+
+                    //There will be an exception here, replace for correct
+                    // way of parsing json arrays using GSON library
+                    // createdpost = new Gson().fromJson(responseText, Post.class);
                 } else if (status == 401) {
                     error = "Unauthorized for the operation";
                 } else {
@@ -131,8 +101,13 @@ public class Subscriber {
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
+                error = e.getMessage();
             } catch (IOException e) {
                 e.printStackTrace();
+                error = e.getMessage();
+            } catch (Exception e) {
+                e.printStackTrace();
+                error = e.getMessage();
             }
             return createdpost;
         }
