@@ -78,12 +78,9 @@ public class Subscriber {
         protected ArrayList<Post> doInBackground(Post... params) {
             ArrayList<Post> posts = null;
             URL getUrl = null;
-            URL getUrl1=null;
-            //Post getpost;
             String responseText = null;
             try {
                 getUrl = new URL("http://trojanow.herokuapp.com/statuses");
-                getUrl1= new URL ("TEMPERATURE");
                 HttpURLConnection urlConnection = (HttpURLConnection)getUrl.openConnection();
                 urlConnection.setDoInput(true);
                 urlConnection.setDoOutput(false);
@@ -92,11 +89,6 @@ public class Subscriber {
                         "application/x-www-form-urlencoded");
                 urlConnection.setRequestProperty("Accept", "application/json");
                 urlConnection.setRequestProperty("AUTHORIZATION_TOKEN", new AuthService(context).getAuthToken());
-                //System.out.println(urlConnection.getResponseCode());
-
-              //  String statuspost=post.getDescription();
-               // String statuspost=post.getDescription();
-             //   System.out.println(statuspost);
 
                 urlConnection.connect();
                 int status = urlConnection.getResponseCode();
@@ -110,6 +102,8 @@ public class Subscriber {
                     }
                     br.close();
                     responseText = sb.toString();
+                    Type listType = new TypeToken<ArrayList<Post>>(){}.getType();
+                    posts = new Gson().fromJson(responseText, listType);
                 } else if (status == 401) {
                     error = "Unauthorized for the operation";
                 } else {
