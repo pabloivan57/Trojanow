@@ -93,16 +93,7 @@ public class Subscriber {
                 urlConnection.setRequestProperty("Accept", "application/json");
                 urlConnection.setRequestProperty("AUTHORIZATION_TOKEN", new AuthService(context).getAuthToken());
                 //System.out.println(urlConnection.getResponseCode());
-                HttpURLConnection urlConnection1 = (HttpURLConnection)getUrl1.openConnection();
-                urlConnection1.setDoInput(true);
-                urlConnection1.setDoOutput(false);
-                urlConnection1.setRequestMethod("GET");
-                urlConnection1.setRequestProperty("Content-Type",
-                        "application/x-www-form-urlencoded");
-                urlConnection1.setRequestProperty("Accept", "application/json");
-                String auth_token1 = new AuthService(context).getAuthToken();
-                urlConnection1.setRequestProperty("AUTHORIZATION_TOKEN", new AuthService(context).getAuthToken());
-                //System.out.println(urlConnection.getResponseCode());
+
               //  String statuspost=post.getDescription();
                // String statuspost=post.getDescription();
              //   System.out.println(statuspost);
@@ -124,24 +115,7 @@ public class Subscriber {
                 } else {
                     error = "An error ocurred in server " + status;
                 }
-                urlConnection1.connect();
-                int status1 = urlConnection1.getResponseCode();
-                if (status1 == 200 || status1 == 201) {
-                    BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection1.getInputStream()));
-                    StringBuilder sb = new StringBuilder();
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        sb.append(line + "\n");
 
-                    }
-                    br.close();
-                    responseText = sb.toString();
-                    System.out.println("----temperature"+responseText);
-                } else if (status == 401) {
-                    error = "Unauthorized for the operation";
-                } else {
-                    error = "An error ocurred in server " + status;
-                }
                 } catch (MalformedURLException e) {
                 e.printStackTrace();
                 error = e.getMessage();
