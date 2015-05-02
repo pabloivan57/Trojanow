@@ -15,28 +15,23 @@ import com.trojanow.model.Post;
 import com.trojanow.api.Subscriber;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by pabloivan57 on 3/28/15.
  */
 public class PostAdapter extends ArrayAdapter<Post> {
     private final Context context;
+    private final ArrayList<Post> posts;
 
-    private final ArrayList<Post> mylist;
-
-    public PostAdapter(Context context, ArrayList<Post> mylist) {
-        super(context, 0, mylist);
+    public PostAdapter(Context context, ArrayList<Post> posts) {
+        super(context, 0, posts);
         this.context = context;
-        this.mylist = mylist;
+        this.posts = posts;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        System.out.println("---here");
-        System.out.println(mylist);
-        // Get the data item for this position
-      //  Post post = getItem(position);
-        // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.post_row, parent, false);
         }
@@ -44,9 +39,15 @@ public class PostAdapter extends ArrayAdapter<Post> {
         TextView post_row_fullname = (TextView) convertView.findViewById(R.id.post_row_fullname);
         TextView post_row_status = (TextView) convertView.findViewById(R.id.post_row_status);
         // Populate the data into the template view using the data object
-     //   post_row_fullname.setText(mylist.get(position).getfullname());
-        post_row_status.setText(mylist.get(position).getDescription());
+        post_row_fullname.setText(posts.get(position).getUser().getFullname());
+        post_row_status.setText(posts.get(position).getDescription());
         // Return the completed view to render on screen
         return convertView;
     }
+
+    @Override
+    public int getCount() {
+        return posts.size();
+    }
+
 }

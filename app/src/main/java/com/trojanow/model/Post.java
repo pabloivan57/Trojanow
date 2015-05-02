@@ -17,7 +17,7 @@ public class Post {
     private boolean isEvent;
     private Location location;
     private List<MediaType> media;
-    private User publisher;
+    private User user;
     private EnvironmentInfo environmentInfo;
 
     public String getTitle() {
@@ -66,12 +66,12 @@ public class Post {
         this.media = media;
     }
 
-    public User getPublisher() {
-        return publisher;
+    public User getUser() {
+        return user;
     }
 
-    public void setPublisher(User publisher) {
-        this.publisher = publisher;
+    public void setUser(User publisher) {
+        this.user = publisher;
     }
 
 

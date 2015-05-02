@@ -39,7 +39,7 @@ public class PostController extends Activity implements PublisherDelegate, Subsc
 
     ListView lstPosts;
     ArrayAdapter mPostsAdapter;
-    ArrayList posts = new ArrayList();
+    ArrayList<Post> posts = new ArrayList<Post>();
     PostAdapter postAdapter;
     EditText txtPost;
     Button btnPost;
@@ -62,9 +62,9 @@ public class PostController extends Activity implements PublisherDelegate, Subsc
         chkEnvironment =  (CheckBox) findViewById(R.id.chkEnviroment);
         chkAnonymous   =  (CheckBox) findViewById(R.id.chkAnonymous);
         chkEvent       =  (CheckBox) findViewById(R.id.chkEvent);
-        postAdapter = new PostAdapter(this,posts);
         btnPost = (Button) findViewById(R.id.btnpost);
         btnPost.setOnClickListener(btnPostHandler);
+        postAdapter = new PostAdapter(this, posts);
         lstPosts = (ListView) findViewById(R.id.lstPosts);
         lstPosts.setAdapter(postAdapter);
 
@@ -74,22 +74,14 @@ public class PostController extends Activity implements PublisherDelegate, Subsc
         //Initialize sensors
         geolocation = new Geolocation(this);
         environment = new Environment(this);
-      //  Post post=new Post();
-       // status=post.getDescription();
-        //System.out.println("--"+status);
     }
     protected void onStart()
     {
 
         super.onStart();
-        Post post = new Post();
-        System.out.print("------subscriber");
         Subscriber subscriber = new Subscriber(PostController.this);
         subscriber.setDelegate(PostController.this);
-        subscriber.post(post);
-        String statuspost= post.getDescription();
-    //    post.setLocation(geolocation.getLocation());
-      //  post.setIsEvent(chkEvent.isChecked());
+        subscriber.fetch();
     }
 
 
@@ -183,14 +175,17 @@ public class PostController extends Activity implements PublisherDelegate, Subsc
                 Toast.LENGTH_LONG).show();
     }
 
-    public void subscriberDidFinishGetting(Post createdPost) {
-       // Toast.makeText(getApplicationContext(), "Status Posted Sucessfully",
-         //       Toast.LENGTH_LONG).show();
+    public void subscriberDidFinishGettingPosts(ArrayList<Post> posts) {
+        this.posts = posts;
+        //TODO: this is not the correct way of doing this... there's no time to research though
+        this.postAdapter = new PostAdapter(this, posts);
+        this.lstPosts.setAdapter(this.postAdapter);
+        this.postAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void subscriberDidFailedGetting(String error) {
-       // Toast.makeText(getApplicationContext(), "There was an error while posting the status",
-         //       Toast.LENGTH_LONG).show();
+    public void subscriberDidFailedGettingPosts(String error) {
+       Toast.makeText(getApplicationContext(), error,
+                Toast.LENGTH_LONG).show();
     }
 }
