@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.pabloivan57.trojanow.R;
 import com.trojanow.model.Post;
+import com.trojanow.api.Subscriber;
 
 import java.util.ArrayList;
 
@@ -20,7 +21,9 @@ import java.util.ArrayList;
  */
 public class PostAdapter extends ArrayAdapter<Post> {
     private final Context context;
+
     private final ArrayList<Post> mylist;
+
     public PostAdapter(Context context, ArrayList<Post> mylist) {
         super(context, 0, mylist);
         this.context = context;
@@ -29,6 +32,8 @@ public class PostAdapter extends ArrayAdapter<Post> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        System.out.println("---here");
+        System.out.println(mylist);
         // Get the data item for this position
       //  Post post = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view

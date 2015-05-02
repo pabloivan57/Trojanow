@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.pabloivan57.trojanow.R;
 import com.google.gson.Gson;
+import com.trojanow.lists.PostAdapter;
 import com.trojanow.model.Post;
 import com.trojanow.networking.QueryStringBuilder;
 
@@ -49,6 +50,7 @@ public class Subscriber {
     ArrayList<String> title_array = new ArrayList<String>();
     ArrayList<String> notice_array = new ArrayList<String>();
     ArrayList<HashMap<String, String>> mlist = new ArrayList<HashMap<String, String>>();
+   public static ArrayList<HashMap<String, String>> mylist = new ArrayList<HashMap<String, String>>();
 
 
     public Subscriber(Activity context) {
@@ -82,10 +84,12 @@ public class Subscriber {
             Post createdpost = null;
             URL postUrl = null;
             URL getUrl = null;
+            URL getUrl1=null;
             //Post getpost;
             String responseText = null;
             try {
                 getUrl = new URL("http://trojanow.herokuapp.com/statuses");
+                getUrl1= new URL ("TEMPERATURE");
                 HttpURLConnection urlConnection = (HttpURLConnection)getUrl.openConnection();
                 urlConnection.setDoInput(true);
                 urlConnection.setDoOutput(false);
@@ -95,9 +99,20 @@ public class Subscriber {
                 urlConnection.setRequestProperty("Accept", "application/json");
                 String auth_token = new AuthService(context).getAuthToken();
                 urlConnection.setRequestProperty("AUTHORIZATION_TOKEN", new AuthService(context).getAuthToken());
-                System.out.println(urlConnection.getResponseCode());
-                String statuspost=post.getDescription();
-                System.out.println(statuspost);
+                //System.out.println(urlConnection.getResponseCode());
+                HttpURLConnection urlConnection1 = (HttpURLConnection)getUrl1.openConnection();
+                urlConnection1.setDoInput(true);
+                urlConnection1.setDoOutput(false);
+                urlConnection1.setRequestMethod("GET");
+                urlConnection1.setRequestProperty("Content-Type",
+                        "application/x-www-form-urlencoded");
+                urlConnection1.setRequestProperty("Accept", "application/json");
+                String auth_token1 = new AuthService(context).getAuthToken();
+                urlConnection1.setRequestProperty("AUTHORIZATION_TOKEN", new AuthService(context).getAuthToken());
+                //System.out.println(urlConnection.getResponseCode());
+              //  String statuspost=post.getDescription();
+               // String statuspost=post.getDescription();
+             //   System.out.println(statuspost);
 
                 urlConnection.connect();
                 int status = urlConnection.getResponseCode();
@@ -112,7 +127,9 @@ public class Subscriber {
                     br.close();
                     responseText = sb.toString();
 
-                    ArrayList<HashMap<String, String>> mylist = new ArrayList<HashMap<String, String>>();
+
+
+
 
 
 
@@ -126,20 +143,24 @@ public class Subscriber {
                     String description = obj.getString("description");
                     JSONObject obj1 = obj.getJSONObject("user");
                     JSONObject loc = obj.getJSONObject("location");
-
-                       JSONObject temp = obj.getJSONObject("environment");
+                  /*      JSONObject temp;
+                        if(obj.getJSONObject("environment")!=null)
+                        {  temp = obj.getJSONObject("environment");
                      String temperature = temp.getString("temperature");
+                        map.put("environment",temperature);}
+                        else
+                        map.put("environment","null");*/
                        // map.put("temperature", temperature);}
 
                     String fullname = obj1.getString("fullname");
-                    System.out.println(fullname);
+//                    System.out.println(fullname);
                     String latitude = loc.getString("latitude");
                     String longitude=loc.getString("longitude");
 
                         map.put("name", fullname);
                         map.put("latitude", latitude);
                         map.put("longitude",longitude);
-                        map.put("environment",temperature);
+
 
 
                         map.put("description",description);
@@ -155,7 +176,7 @@ public class Subscriber {
                     }
 
 
-                 //    System.out.println(mylist);
+
 
                       mlist=mylist;
 
@@ -167,8 +188,25 @@ public class Subscriber {
                 } else {
                     error = "An error ocurred in server " + status;
                 }
+                urlConnection1.connect();
+                int status1 = urlConnection1.getResponseCode();
+                if (status1 == 200 || status1 == 201) {
+                    BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection1.getInputStream()));
+                    StringBuilder sb = new StringBuilder();
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line + "\n");
 
-            } catch (MalformedURLException e) {
+                    }
+                    br.close();
+                    responseText = sb.toString();
+                    System.out.println("----temperature"+responseText);
+                } else if (status == 401) {
+                    error = "Unauthorized for the operation";
+                } else {
+                    error = "An error ocurred in server " + status;
+                }
+                } catch (MalformedURLException e) {
                 e.printStackTrace();
                 error = e.getMessage();
             } catch (IOException e) {
@@ -184,6 +222,9 @@ public class Subscriber {
 
 
         protected void onPostExecute(Post post) {
+            System.out.println(mylist);
+         //  PostAdapter posted=new PostAdapter();
+           // posted.passpost(mylist);
             if (post != null) {
                 if (delegate != null) {
                   //  Toast.makeText(getApplicationContext(), "Received!", Toast.LENGTH_LONG).show();

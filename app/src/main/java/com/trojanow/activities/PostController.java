@@ -62,7 +62,7 @@ public class PostController extends Activity implements PublisherDelegate, Subsc
         chkEnvironment =  (CheckBox) findViewById(R.id.chkEnviroment);
         chkAnonymous   =  (CheckBox) findViewById(R.id.chkAnonymous);
         chkEvent       =  (CheckBox) findViewById(R.id.chkEvent);
-        postAdapter = new PostAdapter(this, posts);
+        postAdapter = new PostAdapter(this,posts);
         btnPost = (Button) findViewById(R.id.btnpost);
         btnPost.setOnClickListener(btnPostHandler);
         lstPosts = (ListView) findViewById(R.id.lstPosts);
