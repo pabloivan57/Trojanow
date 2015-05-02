@@ -48,6 +48,8 @@ public class Subscriber {
     JSONArray description=null;
     ArrayList<String> title_array = new ArrayList<String>();
     ArrayList<String> notice_array = new ArrayList<String>();
+    ArrayList<HashMap<String, String>> mlist = new ArrayList<HashMap<String, String>>();
+
 
     public Subscriber(Activity context) {
         this.context = context;
@@ -109,7 +111,7 @@ public class Subscriber {
                     }
                     br.close();
                     responseText = sb.toString();
-                    HashMap<String, String> map = new HashMap<String, String>();
+
                     ArrayList<HashMap<String, String>> mylist = new ArrayList<HashMap<String, String>>();
 
 
@@ -118,33 +120,44 @@ public class Subscriber {
 
                     JSONArray jarray = new JSONArray(responseText);
                     for (int i = 0; i < jarray.length(); i++) {
+                        HashMap<String, String > map = new HashMap<String, String>();
 
                     JSONObject obj = jarray.getJSONObject(i);
                     String description = obj.getString("description");
                     JSONObject obj1 = obj.getJSONObject("user");
                     JSONObject loc = obj.getJSONObject("location");
-                    JSONObject temp = obj.getJSONObject("environment");
+
+                       JSONObject temp = obj.getJSONObject("environment");
+                     String temperature = temp.getString("temperature");
+                       // map.put("temperature", temperature);}
+
                     String fullname = obj1.getString("fullname");
+                    System.out.println(fullname);
                     String latitude = loc.getString("latitude");
                     String longitude=loc.getString("longitude");
-                    String temperature = temp.getString("temperature");
+
                         map.put("name", fullname);
-                        map.put("temperature", temperature);
+                        map.put("latitude", latitude);
+                        map.put("longitude",longitude);
+                        map.put("environment",temperature);
+
 
                         map.put("description",description);
 
+
+                //        mylist.add(map);
+
+
+
                         mylist.add(map);
-                    //    String name_fd = obj.getString("FOOD_NAME");
-                    //  Log.d("JSONArray", id_fd+"   " +name_fd);
-              //      System.out.println(description);
-                //    System.out.println(fullname);
-
-
+                    //    System.out.println("---mlist--"+map);
 
                     }
 
 
+                 //    System.out.println(mylist);
 
+                      mlist=mylist;
 
                     //There will be an exception here, replace for correct
                     // way of parsing json arrays using GSON library
@@ -169,6 +182,7 @@ public class Subscriber {
         }
 
 
+
         protected void onPostExecute(Post post) {
             if (post != null) {
                 if (delegate != null) {
@@ -180,8 +194,11 @@ public class Subscriber {
                 if (delegate != null) {
                     delegate.subscriberDidFailedGetting(this.error);
                 }
+               // System.out.println("--------mlist print"+mlist);
             }
         }
+
+
 
     }
 }

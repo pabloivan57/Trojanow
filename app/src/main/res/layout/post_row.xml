@@ -24,7 +24,7 @@
 
     <!-- Username-->
     <TextView
-        android:id="@+id/post_row_username"
+        android:id="@+id/post_row_fullname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/thumbnail"
@@ -37,10 +37,10 @@
 
     <!-- Post Content -->
     <TextView
-        android:id="@+id/post_row_post"
+        android:id="@+id/post_row_status"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/post_row_username"
+        android:layout_below="@id/post_row_fullname"
         android:textColor="#343434"
         android:textSize="10dip"
         android:layout_marginTop="1dip"

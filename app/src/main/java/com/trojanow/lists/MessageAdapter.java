@@ -45,14 +45,14 @@ public class MessageAdapter extends BaseAdapter {
         if(convertView==null)
             vi = inflater.inflate(R.layout.post_row, null);
 
-        TextView username = (TextView)vi.findViewById(R.id.post_row_username); // title
-        TextView postDescription = (TextView)vi.findViewById(R.id.post_row_post); // artist name
+     //   TextView username = (TextView)vi.findViewById(R.id.post_row_username); // title
+      //  TextView postDescription = (TextView)vi.findViewById(R.id.post_row_post); // artist name
 
         Message message = data.get(position);
 
         // Setting all values in listview
-        username.setText(message.getSender().getFullname());
-        postDescription.setText(message.getMessage());
+      //  username.setText(message.getSender().getFullname());
+       // postDescription.setText(message.getMessage());
         return vi;
     }
 }
